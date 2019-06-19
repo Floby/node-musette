@@ -6,7 +6,7 @@
   "scripts": {
     "coveralls": "cat coverage/lcov.info | coveralls",
     "start": "./bin/musette",
-    "test": "mocha test"
+    "test": "nyc -r html -r text mocha test"
   },
   "bin": "./bin/musette",
   "repository": {
@@ -28,6 +28,7 @@
     "chai": "^4.2.0",
     "coveralls": "^3.0.4",
     "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2"
   },

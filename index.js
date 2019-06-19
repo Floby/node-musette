@@ -4,6 +4,8 @@ const { matchPattern } = require('url-matcher')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const http = require('http')
+const Matcher = require('./src/matcher')
+const MatcherQueue = require('./src/matcher-queue')
 
 function createStubApi (matchersQueue, log=true) {
   const api = express()
@@ -36,51 +38,8 @@ function createAdminApi (matchersQueue, log=true) {
   return admin
 }
 
-function MatchersQueue () {
-  let matchers = []
-
-  this.push = (matcher) => {
-    console.log('adding matcher', matcher.toString())
-    matchers.push(matcher)
-  }
-  this.popMatch = (req) => {
-    const index = matchers.findIndex((matcher) => matcher.match(req))
-    if (index >= 0) {
-      const matcher = matchers[index]
-      console.log('found matcher', matcher.toString())
-      matchers = matchers.slice(0, index).concat(matchers.slice(index + 1))
-      return matcher
-    }
-  }
-  this.clear = () => {
-    matchers = []
-  }
-}
-
-function Matcher (matchSpec) {
-  const pattern = matchSpec.path
-  const headers = matchSpec.headers || {}
-  const response = {
-    code: matchSpec.code || 200,
-    body: matchSpec.body || ''
-  }
-  this.response = () => ({ ...response })
-
-  this.match = (req) => {
-    if (!matchPattern(pattern, req.url)) {
-      return false
-    }
-    const headersMatch = Object.entries(headers).every(([key, value]) => {
-      return req.headers[key] === value
-    })
-    return headersMatch
-  }
-  this.toString = () => `Match(${pattern})`
-}
-
-
 function createServer ({ stubPort, adminPort, log=true }) {
-  const matchersQueue = new MatchersQueue()
+  const matchersQueue = new MatcherQueue()
   const stubApi = createStubApi(matchersQueue, log)
   const adminApi = createAdminApi(matchersQueue, log)
   const stubServer = http.createServer(stubApi)
