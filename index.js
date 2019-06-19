@@ -22,7 +22,7 @@ function createStubApi (matchersQueue) {
 function createAdminApi (matchersQueue) {
   const admin = express()
   admin.use(morgan('[ADMIN] :method :url :status :res[content-length] - :response-time ms'))
-  admin.use(bodyParser.urlencoded())
+  admin.use(bodyParser.urlencoded({ extended: false }))
   admin.use(bodyParser.json())
   admin.post('/_match', (req, res) => {
     const matcher = new Matcher(req.body)
