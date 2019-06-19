@@ -4,7 +4,11 @@
   "description": "A programmable stub API",
   "main": "index.js",
   "scripts": {
+    "start": "./bin/musette",
     "test": "mocha test"
+  },
+  "bin": {
+    "musette": "./bin/musette"
   },
   "repository": {
     "type": "git",
