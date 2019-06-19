@@ -29,6 +29,10 @@ function createAdminApi (matchersQueue) {
     matchersQueue.push(matcher)
     res.status(201).send({})
   })
+  admin.post('/_clear', (req, res) => {
+    matchersQueue.clear()
+    res.status(204).end()
+  })
   return admin
 }
 
@@ -48,6 +52,9 @@ function MatchersQueue () {
       matchers = matchers.slice(0, index).concat(matchers.slice(index + 1))
       return matcher
     }
+  }
+  this.clear = () => {
+    matchers = []
   }
 }
 
