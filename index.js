@@ -5,9 +5,9 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const http = require('http')
 
-function createStubApi (matchersQueue) {
+function createStubApi (matchersQueue, log=true) {
   const api = express()
-  api.use(morgan('[STUB] :method :url :status :res[content-length] - :response-time ms'))
+  log && api.use(morgan('[STUB] :method :url :status :res[content-length] - :response-time ms'))
   api.use((req, res, next) => {
     const matcher = matchersQueue.popMatch(req)
     if (!matcher) {
@@ -19,9 +19,9 @@ function createStubApi (matchersQueue) {
   return api
 }
 
-function createAdminApi (matchersQueue) {
+function createAdminApi (matchersQueue, log=true) {
   const admin = express()
-  admin.use(morgan('[ADMIN] :method :url :status :res[content-length] - :response-time ms'))
+  log && admin.use(morgan('[ADMIN] :method :url :status :res[content-length] - :response-time ms'))
   admin.use(bodyParser.urlencoded({ extended: false }))
   admin.use(bodyParser.json())
   admin.post('/_match', (req, res) => {
@@ -44,7 +44,6 @@ function MatchersQueue () {
     matchers.push(matcher)
   }
   this.popMatch = (req) => {
-    console.log('matching %s %s', req.method, req.url)
     const index = matchers.findIndex((matcher) => matcher.match(req))
     if (index >= 0) {
       const matcher = matchers[index]
@@ -80,10 +79,10 @@ function Matcher (matchSpec) {
 }
 
 
-function createServer ({ stubPort, adminPort }) {
+function createServer ({ stubPort, adminPort, log=true }) {
   const matchersQueue = new MatchersQueue()
-  const stubApi = createStubApi(matchersQueue)
-  const adminApi = createAdminApi(matchersQueue)
+  const stubApi = createStubApi(matchersQueue, log)
+  const adminApi = createAdminApi(matchersQueue, log)
   const stubServer = http.createServer(stubApi)
   const adminServer = http.createServer(adminApi)
   async function start () {
