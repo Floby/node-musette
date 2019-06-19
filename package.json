@@ -4,12 +4,11 @@
   "description": "A programmable stub API",
   "main": "index.js",
   "scripts": {
+    "coveralls": "cat coverage/lcov.info | coveralls",
     "start": "./bin/musette",
     "test": "mocha test"
   },
-  "bin": {
-    "musette": "./bin/musette"
-  },
+  "bin": "./bin/musette",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Floby/node-musette.git"
@@ -27,6 +26,7 @@
   "homepage": "https://github.com/Floby/node-musette#readme",
   "devDependencies": {
     "chai": "^4.2.0",
+    "coveralls": "^3.0.4",
     "mocha": "^6.1.4",
     "sinon": "^7.3.2"
   },
