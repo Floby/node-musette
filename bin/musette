@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+const Config = require('../config')
+const { createServer } = require('../')
+const server = createServer({
+  stubPort: Config.get('PORT'),
+  adminPort: Config.get('ADMIN_PORT')
+})
+
+server.start()
+  .then(() => console.log('server listening on ports', Config.get('PORT'), Config.get('ADMIN_PORT')))
+  .catch((error) => {
+    console.error('Server failed to start', error.stack)
+    process.exit(1)
+  })
