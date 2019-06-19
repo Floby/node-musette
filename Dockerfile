@@ -3,7 +3,7 @@ RUN mkdir -p /opt/musette
 WORKDIR /opt/musette
 COPY *.js *.json /opt/musette/
 COPY bin /opt/musette/bin
-RUN ls /opt/musette
+COPY src /opt/musette/src
 RUN npm ci --production
 
 EXPOSE 8080
